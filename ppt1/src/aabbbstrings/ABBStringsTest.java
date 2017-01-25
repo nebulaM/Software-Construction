@@ -1,11 +1,12 @@
 package aabbbstrings;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ABBStringsTest {
 
@@ -51,13 +52,23 @@ public class ABBStringsTest {
 	}
 	
 	@Test
-	public void testWords5() {
-		try {
-			assertEquals(new HashSet<String>(Arrays.asList("aabbb", "bbbaa")), ABBStrings.getWords(5));
-		}
-		catch (TooManyWordsException e) {
-			fail("No exception should have been thrown!");
-		}
-	}
+    public void testWords5() {
+        try {
+            assertEquals(new HashSet<String>(Arrays.asList("aabbb", "bbbaa")), ABBStrings.getWords(5));
+        }
+        catch (TooManyWordsException e) {
+            fail("No exception should have been thrown!");
+        }
+    }
+
+    @Test
+    public void testWords12() {
+        try {
+            assertEquals(new HashSet<String>(Arrays.asList("aaaaaaaaaaaa", "aaaaaabbbbbb", "aaaabbbaabbb", "aaaabbbbbbaa", "aabbbaaaabbb", "aabbbaabbbaa", "aabbbbbbaaaa", "bbbaaaaaabbb", "bbbaaaabbbaa", "bbbaabbbaaaa", "bbbbbbaaaaaa", "bbbbbbbbbbbb")), ABBStrings.getWords(12));
+        }
+        catch (TooManyWordsException e) {
+            fail("No exception should have been thrown!");
+        }
+    }
 	
 }
