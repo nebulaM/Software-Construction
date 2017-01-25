@@ -1,0 +1,19 @@
+Lab2.txt
+===
+
+## Code style and smells
+What is good, bad, confusing about the code? Focus only on `Main.java` and `UBCPoet.java`.
+
+<your text goes here>
+
+## The First-Line Bug
+
+<your text goes here>
+
+## The Out-of-Bounds Bug
+
+<your text goes here>
+
+## The Illegal Argument Bug
+
+<your text goes here>
