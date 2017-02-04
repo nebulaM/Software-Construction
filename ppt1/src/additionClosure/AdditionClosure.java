@@ -5,10 +5,11 @@ import java.util.List;
 
 public class AdditionClosure {
 
-	public static boolean isClosed(List<Integer> intList, Integer n) {
+    public static boolean isClosed(List<Integer> intList, Integer n) {
         if(intList==null || intList.size()==1){
             return true;
         }
+
         //Set is useful only when inList is huge
         //Set<Integer> intSet=new HashSet<>(intList);
         int max= Collections.max(intList);
@@ -35,7 +36,7 @@ public class AdditionClosure {
                 }
             }
         }
-		return true;
-	}
-	
+        return true;
+    }
+
 }
