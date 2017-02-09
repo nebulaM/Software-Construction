@@ -1,7 +1,7 @@
 package aabbbstrings;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class ABBStrings {
 
@@ -19,19 +19,15 @@ public class ABBStrings {
     }
 
     public static long countStringsHelper(int n){
-        if(n<0){
+        if(n<0 || n==1){
             return 0;
         }
         if(n==0){
             return 1;
         }
-        if(n==1){
-            return 0;
-        }
         return countStringsHelper(n-2)+countStringsHelper(n-3);
     }
 
-    public static Set<String> setString;
     /**
      *
      * @param n >= 0
@@ -43,50 +39,32 @@ public class ABBStrings {
         if(n<0){
             return null;
         }
-        setString=new TreeSet<>();
-        buildWords( n,0,new StringBuilder());
-        return setString;
+        Set<String> solution=new HashSet<>();
+        buildWords(n,new StringBuilder(),solution);
+        return solution;
     }
 
 
-    public static String buildWords( int n, int prev,StringBuilder sb){
-        n-=prev;
-        if(n<0){
-            //backtrace: delete previously appended string when go back to upper level
-            if(sb.length()>0) {
-                sb.delete(sb.length() - prev, sb.length());
-            }
-            return "";
+    private static void buildWords( int n, StringBuilder sb,Set<String> solution){
+        if(n<0 || n==1){
+            return ;
         }
         if(n==0){
-            String tmp=sb.toString();
-            //backtrace
-            if(sb.length()>0) {
-                sb.delete(sb.length() - prev, sb.length());
-            }
-            return tmp;
+            solution.add(sb.toString());
+            return;
         }
-        if(n==1){
-            //backtrace
-            if(sb.length()>0) {
-                sb.delete(sb.length() - prev, sb.length());
-            }
-            return "";
-        }
-        String a=buildWords(n,2,sb.append("aa"));
-        if(!a.equals("")){
-            setString.add(a);
-        }
+        //save initial length of sb
+        int len=sb.length();
 
-        String b=buildWords(n,3,sb.append("bbb"));
-        if(!b.equals("")){
-            setString.add(b);
-        }
-        //IMPORTANT: do NOT forget backtrace here
-        if(sb.length()>0) {
-            sb.delete(sb.length() - prev, sb.length());
-        }
-        return "";
+        sb.append("aa");
+        buildWords(n-2,sb,solution);
+        //backtrace
+        sb.setLength(len);
+
+        sb.append("bbb");
+        buildWords(n-3,sb,solution);
+        //backtrace
+        sb.setLength(len);
     }
 
 }
