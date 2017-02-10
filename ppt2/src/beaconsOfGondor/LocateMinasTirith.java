@@ -1,7 +1,9 @@
 package beaconsOfGondor;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 public class LocateMinasTirith {
 
@@ -27,8 +29,67 @@ public class LocateMinasTirith {
 	 *         is farthest from it in terms of number of roads traversed.
 	 */
 	public static Set<Integer> getGoodLocations(int numLocations, String roadNetwork) {
-		// TODO: Implement this method
-		return null; // change this
+	    int minCost=Integer.MAX_VALUE;
+	    Set<Integer> cost=new HashSet<>();
+		for(int i=0;i<numLocations;i++){
+            int tempCost=0;
+            for(char j=0;j<numLocations;j++) {
+                if(j!=i){
+                    tempCost+=cost(i,j,roadNetwork,numLocations);
+                }
+            }
+            System.out.println("cost for city "+i+" is "+tempCost);
+            //same cost, simply add this solution
+            if(tempCost==minCost) {
+                cost.add(i);
+            }else if(tempCost<minCost){
+                minCost=tempCost;
+                //clear all previous results
+                cost.clear();
+                cost.add(i);
+            }
+        }
+		return cost;
 	}
 
+    /**
+     * breath first search to get cost from start to end
+     * @param start index to start
+     * @param end index to end(goal is to reach this)
+     * @param roadNetwork vertex info
+     * @param networkSize how many nodes
+     * @return cost from start to end
+     */
+	private static int cost(int start, int end, String roadNetwork, int networkSize){
+		Queue<Integer> q=new LinkedList<>();
+		Set<Integer> visited=new HashSet<>();
+        //array tracks node parent, index represents node, content represents parent of node
+        int[] parent=new int[networkSize];
+		int cost=1;
+		q.add(start);
+		while(!q.isEmpty()){
+			int current=q.remove();
+			if(current==end){
+			    //add up cost until we reach start
+			    while(parent[current]!=start){
+			        //cost is always 1
+			        cost++;
+                    current=parent[current];
+                }
+				return cost;
+			}
+			for(int i=0;i<networkSize;i++){
+			    //location [i][current] in roadNetwork is index
+				int index= i*networkSize+current;
+				if(roadNetwork.charAt(index)=='1'){
+					if(!visited.contains(i)){
+						visited.add(i);
+						q.add(i);
+						parent[i]=current;
+					}
+				}
+			}
+		}
+		return cost;
+	}
 }
