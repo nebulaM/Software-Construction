@@ -1,11 +1,11 @@
 package beaconsOfGondor;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class LocateMinasTirithTest {
 
@@ -43,7 +43,7 @@ public class LocateMinasTirithTest {
 
 	@Test
 	public void test7() {
-		assertEquals(new HashSet<Integer>(Arrays.asList(0, 1, 2, 3, 4)),
+		assertEquals(new HashSet<Integer>(Arrays.asList(2, 3)),
 				LocateMinasTirith.getGoodLocations(5, "10101 01110 11110 01111 10011".replaceAll("\\s", "")));
 	}
 
