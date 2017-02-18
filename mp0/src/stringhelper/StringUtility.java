@@ -1,6 +1,8 @@
 package stringhelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /** An instance contains static methods for assignment A2 */
 public class StringUtility {
@@ -28,14 +30,19 @@ public class StringUtility {
     public static boolean isPalindrome(String str) {
         // Do not visit each character of the string more than once 
         // each.
-        
-        // TODO: Implement this method
-         
-        return false;
+        if(str.equals("")||str.length()==1){
+            return true;
+        }
+        for(int i=0;i<(str.length()>>1);i++){
+            if(str.charAt(i)!=str.charAt(str.length()-1-i)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**  Return the number of times query occurs as a substring of 
-     * mainString (the different occurrences may overlap).
+     * src (the different occurrences may overlap).
      * Precondition:    query is not null and
      *                  query is not the empty string "".
      * Examples: For src = "ab", query = "b", return 1.
@@ -47,10 +54,18 @@ public class StringUtility {
      * @return a count of the number of times query appears in 
      *          mainString
      */
-    public static int countOccurrences(String mainString, String query) 
+    public static int countOccurrences(String src, String query)
     {
-        // TODO: Implement this method
-        return -1;
+        if(query.equals("")){
+            return src.length()+1;
+        }
+        int count=0;
+        for(int i=0;i<=src.length()-query.length();i++){
+            if(src.substring(i,i+query.length()).equals(query)){
+                count++;
+            }
+        }
+        return count;
     }
 
     /** 
@@ -82,9 +97,25 @@ public class StringUtility {
          * This task can be solved by selecting appropriate methods in the 
          * String class and then using if statements.
          */
-         
-        // TODO: Implement this method
-        return null;
+        if(nameStr.contains(" ")){
+            String[] nameWords=nameStr.split(" ");
+            StringBuilder sb=new StringBuilder();
+            sb.append(upperCaseFirst(nameWords[nameWords.length-1]));
+            sb.append(", ");
+            sb.append(upperCaseFirst(nameWords[0]));
+            int i=1;
+            for (; i < nameWords.length-1; i++) {
+                sb.append(" ");
+                sb.append((nameWords[i].charAt(0) >= 'A' && nameWords[i].charAt(0) <= 'Z') ? nameWords[i].charAt(0) : nameWords[i].substring(0, 1).toUpperCase());
+                sb.append(".");
+            }
+            return sb.toString();
+        }
+        return upperCaseFirst(nameStr);
+    }
+
+    private static String upperCaseFirst(String str){
+        return (str.charAt(0)>='A' && str.charAt(0)<='Z')? str:str.replaceFirst(str.substring(0,1),str.substring(0,1).toUpperCase());
     }
 
     /** Return true iff s1 and s2 are anagrams of each other.
@@ -105,14 +136,15 @@ public class StringUtility {
      * @return true if s2 is an anagram of s1, and false otherwise
      */
     public static boolean anagrams(String s1, String s2) {
-        // TODO: Implement this method
-        
         // You do not need to use iteration/recursion.
         // Hint: how can a sequence of characters be uniquely ordered
         // You might need to first convert the string to an array of
         // characters, and then use a function from class [`Arrays`](http://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html).
-
-        return false;
+        char l1[]=s1.toCharArray();
+        char l2[]=s2.toCharArray();
+        Arrays.sort(l1);
+        Arrays.sort(l2);
+        return Arrays.hashCode(l1)==Arrays.hashCode(l2);
     }
 
 
@@ -135,7 +167,24 @@ public class StringUtility {
          * catenate it with the empty String.
          * This function will probably need a nested loop
          */
-
-        return null;
+        if(encstr==null || encstr.equals("") ||encstr.length()%2!=0) {
+            return "";
+        }
+        List<Integer> l1=new ArrayList<>();
+        List<Character> l2=new ArrayList<>();
+        StringBuilder sb=new StringBuilder();
+        for(int i=0;i<encstr.length();i=i+2){
+            if(encstr.charAt(i)>='0' &&encstr.charAt(i)<='9' ) {
+                int count = Integer.parseInt(encstr.substring(i, i + 1));
+                while (count > 0) {
+                    sb.append(encstr.charAt(i + 1));
+                    count--;
+                }
+            }else {
+                System.out.println("Wrong format");
+                return "";
+            }
+        }
+        return sb.toString();
     }
 }
