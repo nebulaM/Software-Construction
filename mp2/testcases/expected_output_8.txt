@@ -12,7 +12,7 @@ ERROR unexpected tag: </head>
                     <a>
                     </a>
                 </p>
-ERROR unexpected tag: </br>
+                </br>
                 <p>
                     <img>
                 </p>
