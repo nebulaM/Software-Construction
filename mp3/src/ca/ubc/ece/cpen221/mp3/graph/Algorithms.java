@@ -2,6 +2,9 @@ package ca.ubc.ece.cpen221.mp3.graph;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
+import org.omg.CORBA.portable.ValueInputStream;
+
+import java.util.*;
 
 public class Algorithms {
 
@@ -38,11 +41,14 @@ public class Algorithms {
 	 * returned set should correspond to the number of graph
 	 * vertices).
 	 *
-	 * @param
+	 * @param graph saves edge of vertices, not null
 	 * @return
 	 */
 	public static Set<List<Vertex>> depthFirstSearch(Graph graph) {
-		// TODO: Implement this method
+		if(graph==null){
+			throw new IllegalArgumentException("@depthFirstSearch: input graph is null");
+		}
+
 		return null; // this should be changed
 
 	}
@@ -57,12 +63,53 @@ public class Algorithms {
 	 * returned set should correspond to the number of graph
 	 * vertices).
 	 *
-	 * @param
-	 * @return
+	 * @param graph saves edge of vertices, not null
+	 * @return Set of list of vertices visited by each vertex in graph, end->start
 	 */
 	public static Set<List<Vertex>> breadthFirstSearch(Graph graph) {
 		// TODO: Implement this method
-		return null; // this should be changed
+        if(graph==null){
+            throw new IllegalArgumentException("@depthFirstSearch: input graph is null");
+        }
+        Set<List<Vertex>> bfsResult=new HashSet<>();
+        List<Vertex> gVertices=graph.getVertices();
+        Vertex dummy=new Vertex("");
+        for(Vertex v: gVertices){
+            v.setParent(dummy);
+        }
+        for(Vertex start : gVertices){
+            for(Vertex end : gVertices) {
+                if (end.hashCode()!=start.hashCode()) {
+                    Queue<Vertex> q = new LinkedList<>();
+                    Set<Vertex> visited = new HashSet<>();
+                    q.add(start);
+                    while (!q.isEmpty()) {
+                        Vertex curr = q.remove();
+                        if(curr.hashCode()==end.hashCode()){
+                            //add new route from end to start
+                            List<Vertex> route = new ArrayList<>();
+                            while (curr.getParent().hashCode()!=start.hashCode()){
+                                route.add(curr);
+                                curr=curr.getParent();
+                            }
+                            //last two vertices
+                            route.add(curr);
+                            route.add(start);
+                            bfsResult.add(route);
+                            break;
+                        }
+                        for (Vertex w : graph.getDownstreamNeighbors(curr)) {
+                            if (!visited.contains(w)) {
+                                w.setParent(curr);
+                                q.add(w);
+                                visited.add(w);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+		return bfsResult;
 	}
 
 	/**
