@@ -6,7 +6,6 @@ package ca.ubc.ece.cpen221.mp3.staff;
 public class Vertex {
 
 	private String label;
-	private Vertex parent;
 
 	/**
 	 * Create a new vertex with a given label
@@ -26,12 +25,6 @@ public class Vertex {
 	public String getLabel() {
 		return label;
 	}
-
-	public void setParent(Vertex parent){
-	    this.parent=parent;
-    }
-
-	public Vertex getParent(){ return parent;}
 	/**
 	 * Set the label for a vertex
 	 * 
