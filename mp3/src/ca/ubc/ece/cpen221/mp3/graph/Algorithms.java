@@ -6,13 +6,13 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 import java.util.*;
 
 public class Algorithms {
-
-	/**
-	 * *********************** Algorithms ****************************
-	 *
-	 * Please see the README for the machine problem for a more detailed
-	 * specification of the behavior of each method that one should implement.
-	 */
+    public static final int NO_EDGE=-10;
+    /**
+     * *********************** Algorithms ****************************
+     *
+     * Please see the README for the machine problem for a more detailed
+     * specification of the behavior of each method that one should implement.
+     */
 
 	/**
 	 * This is provided as an example to indicate that this method and other
@@ -20,14 +20,48 @@ public class Algorithms {
 	 *
 	 * You should write the specs for this and all other methods.
 	 *
-	 * @param graph
-	 * @param a
-	 * @param b
-	 * @return
+	 * @param graph not null, contains a, b
+	 * @param start start vertex
+     * @param end end vertex
+	 * @return least cost moving from a to b, or return SPECIAL.NO_EDGE
 	 */
-	public static int shortestDistance(Graph graph, Vertex a, Vertex b) {
-		// TODO: Implement this method and others
-		return 0;
+	public static int shortestDistance(Graph graph, Vertex start, Vertex end) {
+        if(graph==null || start==null || end==null){
+            throw new IllegalArgumentException("@commonUpstreamVertices input is null");
+        }
+        if(start.hashCode()==end.hashCode()){
+            return 0;
+        }
+
+        Queue<Vertex> q = new LinkedList<>();
+        Set<Vertex> visited = new HashSet<>();
+        //Map vertex to it's parent using hashcode of each vertex's label(typeOf String)
+        Map<Integer,Integer> parentSet=new HashMap<>();
+        q.add(start);
+
+        while (!q.isEmpty()) {
+            Vertex curr = q.remove();
+            if(curr.hashCode()==end.hashCode()){
+                //add new route from end to start
+                int cost=0;
+                int thisVertex=curr.hashCode();
+                while (parentSet.get(thisVertex)!=start.hashCode()){
+                    cost++;
+                    thisVertex=parentSet.get(thisVertex);
+                }
+                //do not forget the cost from second last vertex to start vertex
+                return cost+1;
+            }
+            for (Vertex w : graph.getDownstreamNeighbors(curr)) {
+                if (!visited.contains(w)) {
+                    parentSet.put(w.hashCode(),curr.hashCode());
+                    q.add(w);
+                    visited.add(w);
+                }
+            }
+        }
+
+		return NO_EDGE;
 	}
 
 	/**
@@ -77,7 +111,7 @@ public class Algorithms {
     }
 
     /**
-     * non-recursive method to transverse graph using depth first search
+     * non-recursive method to transverse a graph using depth first search
      * @param graph not null
      * @param start vertex to start dfs
      * @return a list of vertex in @localParam route
@@ -121,26 +155,30 @@ public class Algorithms {
         List<Vertex> gVertices=graph.getVertices();
 
         for(Vertex start : gVertices){
-            List<Vertex> route = new ArrayList<>();
-            Queue<Vertex> q = new LinkedList<>();
-            Set<Vertex> visited = new HashSet<>();
-            route.add(start);
-            q.add(start);
-            visited.add(start);
-            while (!q.isEmpty()) {
-                Vertex curr = q.remove();
-                for (Vertex v : graph.getDownstreamNeighbors(curr)) {
-                    if (!visited.contains(v)) {
-                        q.add(v);
-                        route.add(v);
-                        visited.add(v);
-                    }
-                }
-            }
-            bfsResult.add(route);
+            bfsResult.add(bfsHelper(graph,start));
         }
 		return bfsResult;
 	}
+
+	private static List<Vertex> bfsHelper(Graph graph, Vertex start){
+        List<Vertex> route = new ArrayList<>();
+        Queue<Vertex> q = new LinkedList<>();
+        Set<Vertex> visited = new HashSet<>();
+        route.add(start);
+        q.add(start);
+        visited.add(start);
+        while (!q.isEmpty()) {
+            Vertex curr = q.remove();
+            for (Vertex v : graph.getDownstreamNeighbors(curr)) {
+                if (!visited.contains(v)) {
+                    q.add(v);
+                    route.add(v);
+                    visited.add(v);
+                }
+            }
+        }
+        return route;
+    }
 
     /**
      *

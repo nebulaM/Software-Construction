@@ -7,8 +7,6 @@ import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 import org.junit.Test;
 
-import java.util.*;
-
 import static junit.framework.TestCase.assertEquals;
 
 public class AlgorithmTest {
@@ -23,7 +21,7 @@ public class AlgorithmTest {
     private Graph graph;
 
     @Test
-    public void test1_1(){
+    public void testBreadthFirstSearch_1(){
         createGraph1();
         System.out.println("downstream vertices for v0-v7: ");
         for(Vertex v : graph.getVertices()) {
@@ -35,7 +33,7 @@ public class AlgorithmTest {
     }
 
     @Test
-    public void test1_2(){
+    public void testDepthFirstSearch_1(){
         createGraph1();
         System.out.println("downstream vertices for v0-v7: ");
         for(Vertex v : graph.getVertices()) {
@@ -46,9 +44,39 @@ public class AlgorithmTest {
         System.out.println(Algorithms.depthFirstSearch(graph));
     }
 
+    @Test
+    public void testSD_1_1() {
+        createGraph1();
+        assertEquals(2, Algorithms.shortestDistance(graph,v0,v2));
+    }
 
     @Test
-    public void test2_1(){
+    public void testSD_1_2() {
+        createGraph1();
+        assertEquals(2, Algorithms.shortestDistance(graph,v0,v7));
+    }
+
+    @Test
+    public void testSD_1_3() {
+        createGraph1();
+        assertEquals(4, Algorithms.shortestDistance(graph,v1,v7));
+    }
+
+    @Test
+    public void testSD_1_4() {
+        createGraph1();
+        assertEquals(2, Algorithms.shortestDistance(graph,v0,v2));
+    }
+
+    @Test
+    public void testSD_1_5() {
+        createGraph1();
+        assertEquals(Algorithms.NO_EDGE, Algorithms.shortestDistance(graph,v5,v1));
+    }
+
+
+    @Test
+    public void testBreadthFirstSearch_2(){
         createGraph2();
         System.out.println("downstream vertices for v0-v7: ");
         for(Vertex v : graph.getVertices()) {
@@ -60,7 +88,7 @@ public class AlgorithmTest {
     }
 
     @Test
-    public void test2_2(){
+    public void testDepthFirstSearch_2(){
         createGraph2();
         System.out.println("downstream vertices for v0-v7: ");
         for(Vertex v : graph.getVertices()) {
@@ -70,6 +98,10 @@ public class AlgorithmTest {
         System.out.println("transversed graph dfs: ");
         System.out.println(Algorithms.depthFirstSearch(graph));
     }
+
+
+
+
 
     private void initGraph(){
         graph=new AdjacencyMatrixGraph();
