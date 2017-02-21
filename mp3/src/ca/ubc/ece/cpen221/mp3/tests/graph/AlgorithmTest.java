@@ -163,6 +163,7 @@ public class AlgorithmTest {
      *                    7
      */
     private void createGraph2(){
+        initGraph();
         graph.addEdge(v0,v1);
         graph.addEdge(v0,v3);
         graph.addEdge(v1,v3);
