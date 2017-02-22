@@ -1,0 +1,6 @@
+commonInfluencers 16741626 87203674 ?
+numRetweets 16741626 87203674 ?
+commonInfluencers 16741626 65096005 ?
+numRetweets 16741626 26925914 ?
+commonInfluencers 119217419 65096005 ?
+commonInfluencers 16741626 289637945 ?

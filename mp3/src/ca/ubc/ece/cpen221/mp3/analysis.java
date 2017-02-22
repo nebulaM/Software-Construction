@@ -13,51 +13,119 @@ import java.util.*;
 
 public class analysis {
     public static void main(String[] args) throws IOException{
-        Graph mGraph=new AdjacencyMatrixGraph();
-        Scanner console= new Scanner(System.in);
-        String choice="l";
-        boolean loopMain=true;
-        while(true){
-            loopMain=true;
-            if(choice.length()>0) {
-                if (choice.charAt(0) == 'l' || choice.equals("load")) {
-                    System.out.println("load in data, enter path of the data: ");
-                    String url = console.nextLine().trim();
-                    if (url.length() > 0) {
-                        if (isURL(url)) {
-                            System.out.println("Downloading from " + url + " ...");
-                        }
-                        try {
-                            mGraph = processGraphFromFileOrURL(url);
-                            printGraph(mGraph);
+        Graph mGraph = new AdjacencyMatrixGraph();
+        Scanner console = new Scanner(System.in);
+        if(args.length==3){
+            if(args[0].equals("parse")|| args[0].equals("-p")) {
+                String url = args[1];
+                if (url.length() > 0) {
+                    if (isURL(url)) {
+                        System.out.println("Downloading from " + url + " ...");
+                    }
+                    try {
+                        mGraph = processGraphFromFileOrURL(url);
+                        printGraph(mGraph);
 
-                        } catch (MalformedURLException mfurle) {
-                            System.out.println("Badly formatted URL: " + url);
-                        } catch (FileNotFoundException fnfe) {
-                            System.out.println("Web page or file not found: " + url);
-                        } catch (IOException ioe) {
-                            System.out.println("I/O error: " + ioe.getMessage());
+                    } catch (MalformedURLException mfurle) {
+                        System.out.println("Badly formatted URL: " + url);
+                    } catch (FileNotFoundException fnfe) {
+                        System.out.println("Web page or file not found: " + url);
+                    } catch (IOException ioe) {
+                        System.out.println("I/O error: " + ioe.getMessage());
+                    }
+                } else {
+                    System.out.println("url cannot be empty");
+                }
+                try (
+                     Writer writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream("twitterResult.txt"), "utf-8"))) {
+                    Queue<String[]> queries = processQueryFromFileOrURL(args[2]);
+                    StringBuilder sb = new StringBuilder();
+
+                    while (!queries.isEmpty()) {
+                        String[] query = queries.poll();
+                        sb.append("query: ");
+                        if (query[0].equals("commonInfluencers")) {
+                            sb.append(query[0]);
+                            sb.append(" ");
+                            sb.append(query[1]);
+                            sb.append(" ");
+                            sb.append(query[2]);
+                            sb.append("\n<result>\n");
+                            sb.append(Algorithms.commonDownstreamVertices(mGraph, new Vertex(query[1]), new Vertex(query[2])));
+                            sb.append("\n<result>\n");
+                        } else if (query[0].equals("numRetweets")) {
+                            sb.append(query[0]);
+                            sb.append(" ");
+                            sb.append(query[1]);
+                            sb.append(" ");
+                            sb.append(query[2]);
+                            sb.append("\n<result>\n");
+                            int cost = Algorithms.shortestDistance(mGraph, new Vertex(query[1]), new Vertex(query[2]));
+                            if (cost == Algorithms.NO_EDGE) {
+                                sb.append("not possible");
+                            } else {
+                                if (cost > 0) {
+                                    cost--;
+                                }
+                                sb.append(cost);
+                            }
+                            sb.append("\n<result>\n");
                         }
-                    } else {
-                        System.out.println("url cannot be empty");
                     }
-                } else if (choice.charAt(0) == 'p' || choice.equals("print")) {
-                    printGraph(mGraph);
-                } else if (choice.charAt(0) == 'q' || choice.equals("query")) {
-                    if (mGraph.size() == 0) {
-                        System.out.println("Please load data into graph first");
-                        choice = "load";
-                        loopMain = false;
-                    } else {
-                        queryGraph(mGraph, console);
-                    }
-                } else if (choice.equals("quit")) {
-                    break;
+                    System.out.println(sb.toString());
+                    writer.write(sb.toString());
+                }catch (IOException ioe){
+                    System.out.println("I/O error: " + ioe.getMessage());
                 }
             }
-            if(loopMain) {
-                System.out.println("(l)oad, (p)rint, (q)uery, (h)elp, quit?");
-                choice = console.nextLine().trim().toLowerCase();
+        }
+        else {
+
+            String choice = "l";
+            boolean loopMain = true;
+            while (true) {
+                loopMain = true;
+                if (choice.length() > 0) {
+                    if (choice.charAt(0) == 'l' || choice.equals("load")) {
+                        System.out.println("load in data, enter path of the data: ");
+                        String url = console.nextLine().trim();
+                        if (url.length() > 0) {
+                            if (isURL(url)) {
+                                System.out.println("Downloading from " + url + " ...");
+                            }
+                            try {
+                                mGraph = processGraphFromFileOrURL(url);
+                                printGraph(mGraph);
+
+                            } catch (MalformedURLException mfurle) {
+                                System.out.println("Badly formatted URL: " + url);
+                            } catch (FileNotFoundException fnfe) {
+                                System.out.println("Web page or file not found: " + url);
+                            } catch (IOException ioe) {
+                                System.out.println("I/O error: " + ioe.getMessage());
+                            }
+                        } else {
+                            System.out.println("url cannot be empty");
+                        }
+                    } else if (choice.charAt(0) == 'p' || choice.equals("print")) {
+                        printGraph(mGraph);
+                    } else if (choice.charAt(0) == 'q' || choice.equals("query")) {
+                        if (mGraph.size() == 0) {
+                            System.out.println("Please load data into graph first");
+                            choice = "load";
+                            loopMain = false;
+                        } else {
+                            queryGraph(mGraph, console);
+                        }
+                    } else if (choice.equals("quit")) {
+                        break;
+                    }
+                }
+                if (loopMain) {
+                    System.out.println("(l)oad, (p)rint, (q)uery, (h)elp, quit?");
+                    choice = console.nextLine().trim().toLowerCase();
+                }
             }
         }
     }
@@ -89,6 +157,26 @@ public class analysis {
         }
     }
 
+    public static Queue<String[]> processQueryFromFileOrURL(String address) throws IOException {
+        InputStream stream=getInputStream(address);
+        BufferedReader reader=new BufferedReader(new InputStreamReader(stream));
+        String line;
+        Queue<String[]> queries=new LinkedList<>();
+        while ((line=reader.readLine())!=null) {
+            if(line.endsWith("?")){
+                String[] parse=line.split(" ");
+                if(parse.length==4){
+                    if(parse[0].equals("commonInfluencers")||parse[0].equals("numRetweets")){
+                        if(parse[1].matches("[0-9]+") && parse[2].matches("[0-9]+")){
+                            queries.add(parse);
+                        }
+                    }
+                }
+            }
+
+        }
+        return queries;
+    }
 
     /**
      * read data from a file/url and put data into graph
