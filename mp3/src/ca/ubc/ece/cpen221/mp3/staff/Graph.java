@@ -60,4 +60,6 @@ public interface Graph {
 	 * method should return a list of size 0 iff the graph has no vertices.
 	 */
 	public List<Vertex> getVertices();
+
+	public int size();
 }
