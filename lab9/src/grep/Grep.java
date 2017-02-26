@@ -1,5 +1,10 @@
 package grep;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,13 +16,13 @@ public class Grep {
     public static void main(String[] args) throws Exception {
         
         // substring to search for
-        String substring = "EECE 210";
+        String substring = "CPEN 221";
         
         // URLs to search
         String[] urls = new String[] {
-                "http://eece210.ece.ubc.ca/",
-                "http://github.com/EECE-210/lab2",
-                "http://github.com/EECE-210/mp1",
+                "http://cpen221.ece.ubc.ca/about/",
+                "https://github.com/CPEN-221/lab2",
+                "https://github.com/CPEN-221/mp3-f16",
         };
         
         // list for accumulating matching lines
@@ -25,17 +30,17 @@ public class Grep {
         
         // queue for sending lines from producers to consumers
         BlockingQueue<Line> queue = new LinkedBlockingQueue<Line>();
-        
+
         Thread[] producers = new Thread[urls.length]; // one producer per URL
-        Thread[] consumers = new Thread[1]; // TODO use multiple consumers
+        Thread[] consumers = new Thread[50];
         
         for (int ii = 0; ii < consumers.length; ii++) { // start Consumers
-            Thread consumer = consumers[ii] = new Thread(new Consumer(/* ... */));
+            Thread consumer = consumers[ii] = new Thread(new Consumer(substring,matches,queue));
             consumer.start();
         }
         
         for (int ii = 0; ii < urls.length; ii++) { // start Producers
-            Thread producer = producers[ii] = new Thread(new Producer(/* ... */));
+            Thread producer = producers[ii] = new Thread(new Producer(urls[ii],queue));
             producer.start();
         }
         
@@ -44,9 +49,8 @@ public class Grep {
         }
         
         // stop Consumers
-        // ...
-        // ...
-        
+        queue.add(new Text("terminate", 0, "-1-1-1STOP"));
+
         for (Thread consumer : consumers) { // wait for Consumers to stop
             consumer.join();
         }
@@ -59,25 +63,72 @@ public class Grep {
 }
 
 class Producer implements Runnable {
-    
-    Producer(/* ... */) {
-        // TODO construct your Producer here!
+
+    private final String mLink;
+    private final BlockingQueue<Line> mQueue;
+
+    Producer(String url, BlockingQueue<Line> queue) {
+        mLink=url;
+        mQueue=queue;
     }
 
     public void run() {
-        // TODO read lines and push them onto the queue for consumers
+        try {
+            URL mURL=new URL(mLink);
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(mURL.openStream()));
+                String line;
+                int lineNum=1;
+                while ((line = in.readLine()) != null) {
+                    try{mQueue.put(new Text(mLink,lineNum++,line));}catch (InterruptedException ire){
+                        System.out.println("InterruptedException" + ire.getMessage());
+                    }
+                }
+
+            }catch (IOException ioe){
+                System.out.println("IOException " + ioe.getMessage());
+            }
+        }catch (MalformedURLException mfe){
+            System.out.println("MalformedURLException " + mfe.getMessage());
+        }
     }
     
 }
 
 class Consumer implements Runnable {
-    
-    Consumer(/* ... */) {
-        // TODO construct your Consumer here!
+
+    private final String mKeyword;
+    private final List<Text> mMatches;
+    private final BlockingQueue<Line> mQueue;
+    private final int mConsumerId;
+    static private int countConsumerId=1;
+
+    Consumer(String keyword, List<Text> matches, BlockingQueue<Line> queue) {
+        mKeyword=keyword;
+        mMatches=matches;
+        mQueue=queue;
+        mConsumerId=countConsumerId++;
     }
 
     public void run() {
-        // TODO take lines from producers off the queue and add matches to the list
+        while (true){
+            try{
+                Line line = mQueue.take();
+                if(line.text().equals("-1-1-1STOP")){
+                    try{mQueue.put(line);}catch (InterruptedException ire){
+                        System.out.println("InterruptedException" + ire.getMessage());
+                    }
+                    break;
+                }else{
+                    if(line.text().contains(mKeyword)){
+                        mMatches.add(new Text(line.filename(),line.lineNumber(),line.text()));
+                        System.out.println("Thread ID " + mConsumerId + " finds line : " + line);
+                    }
+                }
+            }catch (InterruptedException ire){
+                System.out.println("InterruptedException" + ire.getMessage());
+            }
+        }
     }
     
     
