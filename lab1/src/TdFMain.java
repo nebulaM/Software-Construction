@@ -113,6 +113,9 @@ public class TdFMain {
         // speed between successive entries at the Tour de France.
         // This does not have to be between consecutive years;
         // entries with a gap (no racing) between the years is okay.
+        List<Double> allAverageSpeedList=new ArrayList<>();
+        List<Double> medianSpeedList=new ArrayList<>();
+
         for (Map.Entry<String, Biker> currentEntry : allBikers.entrySet()) {
             Biker currentBiker = currentEntry.getValue();
 
@@ -120,25 +123,43 @@ public class TdFMain {
             // Note the use of String.format( )
             System.out.println(String.format("%-30s: %s",
                     currentBiker.getName(), currentBiker.getBestGain()));
-        }
 
-        // TODO: Compute the median speed across all the entries.
-        double medianSpeed = 0;
+            allAverageSpeedList.addAll(currentBiker.getAllAverageSpeed());
+            medianSpeedList.add(currentBiker.getMedianSpeed());
+        }
+        Collections.sort(allAverageSpeedList);
+        Collections.sort(medianSpeedList);
+
+        double medianSpeed = getMedian(allAverageSpeedList);
         // Your code for this should go here and should set the correct value in
         // medianSpeed.
 
         System.out.println("\nThe median speed at the Tour de France is "
                 + medianSpeed);
 
-        // TODO: Compute the median of medians.
-        double medianOfMedians = 0;
         // For each biker, compute the median speed. This will result in a list
         // of
         // median speeds. Now determine the median of this list.
         // Store the result in medianOfMedians.
-        // Your code should go here.
+        double medianOfMedians=getMedian(medianSpeedList);
 
         System.out.println("\nThe median of medians at the Tour de France is "
                 + medianOfMedians);
+    }
+    public static double getMedian(List<Double> list){
+        if(list==null || list.isEmpty()){
+            return 0.0;
+        }
+        int size=list.size();
+        if(size==1){
+            return list.get(0);
+        }else if(size==2){
+            return (list.get(0)+list.get(1))/2.0;
+        } else if(size%2==0) {
+            return (list.get(size/2)+list.get(size/2-1))/2.0;
+        }else{
+            return list.get(size/2);
+        }
+
     }
 }

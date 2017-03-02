@@ -1,5 +1,4 @@
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 
@@ -93,10 +92,10 @@ public class Biker {
      *         once then the improvement is 0.
      */
     public double getBestGain() {
-        // TODO this is where you must add your code
-        // the return statement is bogus for now
-        // You need to implement this method correctly.
-        return 0.0;
+        if(averageSpeeds.isEmpty()||averageSpeeds.size()==1){
+            return 0.0;
+        }
+        return Collections.max(averageSpeeds.values())-Collections.min(averageSpeeds.values());
     }
 
     /**
@@ -106,10 +105,22 @@ public class Biker {
      * @return The median speed from the set of the biker's appearances.
      */
     public double getMedianSpeed() {
-        // TODO: return the median speed for this biker across the years
-        // the return statement is bogus for now.
-        // You need to implement this method correctly.
-        return 0.0;
+        if(averageSpeeds.isEmpty()){
+            return 0.0;
+        }
+        int size=averageSpeeds.size();
+        if(size==1){
+            return averageSpeeds.get(averageSpeeds.firstKey());
+        }else if(size==2){
+            return (averageSpeeds.get(averageSpeeds.firstKey())+averageSpeeds.get(averageSpeeds.lastKey()))/2.0;
+        }else {
+            List<Double> averageSpeedsList=new ArrayList<>(averageSpeeds.values());
+            if(size%2==0) {
+                return (averageSpeedsList.get(size/2)+averageSpeedsList.get(size/2-1))/2.0;
+            }else{
+                return averageSpeedsList.get(size/2);
+            }
+        }
     }
 
     /**
@@ -129,4 +140,8 @@ public class Biker {
             return 0.0;
     }
 
+
+    public Collection<Double> getAllAverageSpeed(){
+        return averageSpeeds.values();
+    }
 }
