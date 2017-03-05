@@ -4,7 +4,7 @@ public class Game implements Tournament {
     
     /*
      *  Matches in this tournament. These matches are of
-     *  type Tournament, so they can be either of the variants
+     *  type tournament, so they can be either of the variants
      *  that we have designed: Game or Bye.
      */
     private final Tournament match1;
