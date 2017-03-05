@@ -15,6 +15,7 @@ public class PostfixEvaluatorTest {
 	    Double delta=0.01;
         assertEquals(2.7,PostfixEvaluator.eval("5 1 2 + 4 * + 3.5 - 5 /"), delta);
         assertEquals(-3.5,PostfixEvaluator.eval("5 1 2 2.5 + 4 * + - 3.5 - 5 /"),delta);
+        assertEquals(3,PostfixEvaluator.eval("3"),delta);
 	}
 
 }
