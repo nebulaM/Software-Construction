@@ -55,26 +55,32 @@ public class PostfixEvaluator {
 		// It is sufficient to support the four basic operations:
 		// addition, subtraction, multiplication & division.
 
-		while(!scanner.isEmpty()){
-		    if(currToken.isDouble()){
-		        s.push(currToken.getValue());
-		        System.out.println("push "+s.peek()+" to stack");
-            }else if(currToken.isVariable()){
-		        String operator=currToken.getName().trim();
-                if(operator.equals("+")){
-                    Double num1=s.pop();
-                    s.push(s.pop()+num1);
-                }else if(operator.equals("-")){
-                    Double num1=s.pop();
-                    s.push(s.pop()-num1);
-                }else if(operator.equals("*")){
-                    Double num1=s.pop();
-                    s.push(s.pop()*num1);
-                }else if(operator.equals("/")){
-                    Double num1=s.pop();
-                    s.push(s.pop()/num1);
-                }else{
-                    throw new MalformedExpressionException("operator should be one of: + = * / ");
+		while(!scanner.isEmpty()) {
+            if (currToken.isDouble()) {
+                s.push(currToken.getValue());
+                System.out.println("push " + s.peek() + " to stack");
+            } else if (currToken.isVariable()) {
+                String operator = currToken.getName().trim();
+                Double num1;
+                switch (operator) {
+                    case "+":
+                        num1 = s.pop();
+                        s.push(s.pop() + num1);
+                        break;
+                    case "-":
+                        num1 = s.pop();
+                        s.push(s.pop() - num1);
+                        break;
+                    case "*":
+                        num1 = s.pop();
+                        s.push(s.pop() * num1);
+                        break;
+                    case "/":
+                        num1 = s.pop();
+                        s.push(s.pop() / num1);
+                        break;
+                    default:
+                        throw new MalformedExpressionException("operator should be one of: + = * / ");
                 }
             }else{
                 System.out.println("@eval: Warning, unexpected expression "+currToken.getName());
