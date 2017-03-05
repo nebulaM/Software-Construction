@@ -12,7 +12,7 @@ public class MutableTest {
         }
         Mutable mTestObj=new Mutable(true, testList);
         mTestObj.modifyList();
-        System.out.println("after calling modify, testList is "+testList);
+        System.out.println("@test1: testList is "+testList);
         System.out.println();
 
     }
@@ -25,7 +25,7 @@ public class MutableTest {
         }
         Mutable mTestObj=new Mutable(false, testList);
         mTestObj.modifyList();
-        System.out.println("after calling modify, testList is "+testList);
+        System.out.println("@test2: testList is "+testList);
         System.out.println();
 
     }
