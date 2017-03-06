@@ -81,4 +81,8 @@ public class Task {
 	public void oneTick() {
 		remProcTime--;
 	}
+
+	public int getRelDeadline(){
+	    return relDeadline;
+    }
 }
